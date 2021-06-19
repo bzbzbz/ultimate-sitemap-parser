@@ -79,6 +79,8 @@ class RequestsWebClient(AbstractWebClient):
         self.__max_response_data_length = None
         self.__timeout = self.__HTTP_REQUEST_TIMEOUT
         self.__proxies = {}
+        self.user_agent = None
+        self.additional_headers = {}
 
     def set_timeout(self, timeout: int) -> None:
         """Set HTTP request timeout."""
@@ -104,11 +106,14 @@ class RequestsWebClient(AbstractWebClient):
 
     def get(self, url: str) -> AbstractWebClientResponse:
         try:
+            headers = {'User-Agent': self.user_agent or self.__USER_AGENT}
+            if self.additional_headers:
+                headers.update(self.additional_headers)
             response = requests.get(
                 url,
                 timeout=self.__timeout,
                 stream=True,
-                headers={'User-Agent': self.__USER_AGENT},
+                headers=headers,
                 proxies=self.__proxies
             )
         except requests.exceptions.Timeout as ex:
