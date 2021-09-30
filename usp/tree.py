@@ -54,11 +54,14 @@ def sitemap_tree_for_urls(urls, web_client: Optional[AbstractWebClient] = None) 
                 web_client=web_client,
                 recursion_level=0,
             )
+            log.info(f"fetching sitemap_url={sitemap_url}")
             unpublished_sitemap = unpublished_sitemap_fetcher.sitemap()
 
             # Skip the ones that weren't found
             if not isinstance(unpublished_sitemap, InvalidSitemap):
                 sitemaps.append(unpublished_sitemap)
+            else:
+                log.error("sitemap_url={sitemap_url} was Invalid")
 
     homepage_url = urls[0]
     stripped_homepage_url = strip_url_to_homepage(url=homepage_url)
