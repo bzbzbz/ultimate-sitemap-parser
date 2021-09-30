@@ -30,6 +30,39 @@ _UNPUBLISHED_SITEMAP_PATHS = {
 """Paths which are not exposed in robots.txt but might still contain a sitemap."""
 
 
+def sitemap_tree_for_urls(urls, web_client: Optional[AbstractWebClient] = None) -> AbstractSitemap:
+    """
+    Using a specific list of urls, fetch the sitemap tree.  Useful for when we don't want to iterate through robots.txt
+    or any unpublished sitemap url.  
+
+
+    :param urls: list of sitemap urls to fetch "http://www.example.com/".
+    :param web_client: Web client implementation to use for fetching sitemaps.
+    :return: Root sitemap object of the fetched sitemap tree.
+    
+    """
+    sitemaps = []
+    urls = [urls] if urls and type(urls) not in (list,tuple) else urls
+
+    for sitemap_url in urls:
+
+        # Don't fetch URLS that are invalid
+        if sitemap_url and sitemap_url.startswith('http'):
+
+            unpublished_sitemap_fetcher = SitemapFetcher(
+                url=sitemap_url,
+                web_client=web_client,
+                recursion_level=0,
+            )
+            unpublished_sitemap = unpublished_sitemap_fetcher.sitemap()
+
+            # Skip the ones that weren't found
+            if not isinstance(unpublished_sitemap, InvalidSitemap):
+                sitemaps.append(unpublished_sitemap)
+
+    index_sitemap = IndexWebsiteSitemap(url=homepage_url, sub_sitemaps=sitemaps)
+    return index_sitemap
+
 def sitemap_tree_for_homepage(homepage_url: str, web_client: Optional[AbstractWebClient] = None) -> AbstractSitemap:
     """
     Using a homepage URL, fetch the tree of sitemaps and pages listed in them.
