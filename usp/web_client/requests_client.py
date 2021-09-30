@@ -74,6 +74,8 @@ class RequestsWebClient(AbstractWebClient):
         '__timeout',
         '__proxies',
     ]
+    
+    verify_ssl = True
 
     def __init__(self):
         self.__max_response_data_length = None
@@ -114,7 +116,8 @@ class RequestsWebClient(AbstractWebClient):
                 timeout=self.__timeout,
                 stream=True,
                 headers=headers,
-                proxies=self.__proxies
+                proxies=self.__proxies,
+                verify = self.verify_ssl
             )
         except requests.exceptions.Timeout as ex:
             # Retryable timeouts
