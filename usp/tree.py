@@ -60,6 +60,15 @@ def sitemap_tree_for_urls(urls, web_client: Optional[AbstractWebClient] = None) 
             if not isinstance(unpublished_sitemap, InvalidSitemap):
                 sitemaps.append(unpublished_sitemap)
 
+    homepage_url = urls[0]
+    stripped_homepage_url = strip_url_to_homepage(url=homepage_url)
+    if homepage_url != stripped_homepage_url:
+        log.warning("Assuming that the homepage of {} is {}".format(homepage_url, stripped_homepage_url))
+        homepage_url = stripped_homepage_url
+
+    if not homepage_url.endswith('/'):
+        homepage_url += '/'
+        
     index_sitemap = IndexWebsiteSitemap(url=homepage_url, sub_sitemaps=sitemaps)
     return index_sitemap
 
