@@ -241,8 +241,7 @@ class XMLSitemapParser(AbstractSitemapParser):
         except Exception as ex:
             # Some sitemap XML files might end abruptly because webservers might be timing out on returning huge XML
             # files so don't return InvalidSitemap() but try to get as much pages as possible
-            log.error("Parsing sitemap from URL {} failed: {}".format(self._url, ex))
-            log.error(self._content)
+            log.error("Parsing sitemap from URL {} failed: {}, content: {}".format(self._url, ex, self._content))
 
         if not self._concrete_parser:
             return InvalidSitemap(
