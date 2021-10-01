@@ -61,7 +61,7 @@ def sitemap_tree_for_urls(urls, web_client: Optional[AbstractWebClient] = None) 
             if not isinstance(unpublished_sitemap, InvalidSitemap):
                 sitemaps.append(unpublished_sitemap)
             else:
-                log.error(f"sitemap_url={sitemap_url} was Invalid")
+                log.warning(f"sitemap_url={sitemap_url} was Invalid")
 
     homepage_url = urls[0]
     stripped_homepage_url = strip_url_to_homepage(url=homepage_url)
